@@ -15,6 +15,7 @@ namespace Microbit.Clock
         public List<Events> EventList = new List<Events>();
         private EditForm EditForm = new EditForm();
         private bool isChecked = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -25,7 +26,15 @@ namespace Microbit.Clock
 
             InitListViewStyle();
 
-            BindData();
+            try
+            {
+                BindData();
+                this.notifyIcon1.ShowBalloonTip(50, "提示信息", "微比特闹钟启动成功", ToolTipIcon.Info);
+            }
+            catch (Exception ex)
+            {
+                this.notifyIcon1.ShowBalloonTip(50, "异常信息", ex.Message, ToolTipIcon.Info);
+            }
         }
 
         void InitTimer()
@@ -166,14 +175,40 @@ namespace Microbit.Clock
         private void timer1_Tick(object sender, EventArgs e)
         {
             string currTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-            if(EventList.Any(x=>x.EventTime + ":00" == currTime))
+            if (EventList.Any(x => x.EventTime + ":00" == currTime))
             {
                 var list = EventList.Where(x => x.EventTime + ":00" == currTime).ToList();
-                foreach(var item in list)
+                foreach (var item in list)
                 {
                     new AlarmForm(item.Title).ShowDialog(this);
                 }
             }
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+            this.Visible = false;
+        }
+
+        private void showItem_Click(object sender, EventArgs e)
+        {
+            this.Visible = true;
+        }
+
+        private void closeItem_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            timer1.Dispose();
+            notifyIcon1.Dispose();
+            this.Close();
+            this.Dispose();
+            Application.Exit();
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            this.Visible = !this.Visible;
         }
     }
 

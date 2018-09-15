@@ -45,8 +45,13 @@
             this.btnAddEvent = new System.Windows.Forms.Button();
             this.listView1 = new System.Windows.Forms.ListView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.showItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.closeItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gbSearch.SuspendLayout();
             this.gbEventList.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbSearch
@@ -197,6 +202,36 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "服务端";
+            this.notifyIcon1.Visible = true;
+            this.notifyIcon1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon1_MouseDoubleClick);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.showItem,
+            this.closeItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
+            // 
+            // showItem
+            // 
+            this.showItem.Name = "showItem";
+            this.showItem.Size = new System.Drawing.Size(100, 22);
+            this.showItem.Text = "显示";
+            this.showItem.Click += new System.EventHandler(this.showItem_Click);
+            // 
+            // closeItem
+            // 
+            this.closeItem.Name = "closeItem";
+            this.closeItem.Size = new System.Drawing.Size(100, 22);
+            this.closeItem.Text = "退出";
+            this.closeItem.Click += new System.EventHandler(this.closeItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -209,9 +244,11 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "微比特电子闹钟";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.gbSearch.ResumeLayout(false);
             this.gbSearch.PerformLayout();
             this.gbEventList.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -233,5 +270,9 @@
         private System.Windows.Forms.Button btnEditEvent;
         private System.Windows.Forms.Button btnSelectAll;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem closeItem;
+        private System.Windows.Forms.ToolStripMenuItem showItem;
     }
 }
