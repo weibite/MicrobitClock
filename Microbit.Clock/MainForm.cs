@@ -1,9 +1,13 @@
-﻿using System;
+﻿using IWshRuntimeLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -29,14 +33,22 @@ namespace Microbit.Clock
             try
             {
                 BindData();
-                this.notifyIcon1.ShowBalloonTip(50, "提示信息", "微比特闹钟启动成功", ToolTipIcon.Info);
+                this.ShowInTaskbar = false;
+                this.WindowState = FormWindowState.Minimized;
+
+                this.notifyIcon1.ShowBalloonTip(50, "提示信息", "微比特电子闹钟已启动", ToolTipIcon.Info);
             }
             catch (Exception ex)
             {
                 this.notifyIcon1.ShowBalloonTip(50, "异常信息", ex.Message, ToolTipIcon.Info);
             }
+            CreateShortCut();
         }
 
+
+        /// <summary>
+        /// 初始化定时器
+        /// </summary>
         void InitTimer()
         {
             timer1.Enabled = true;
@@ -44,6 +56,9 @@ namespace Microbit.Clock
             timer1.Start();
         }
 
+        /// <summary>
+        /// 设置ListView的列头
+        /// </summary>
         void InitColumn()
         {
             this.listView1.View = View.Details;
@@ -54,6 +69,9 @@ namespace Microbit.Clock
             this.listView1.Columns.Add("提醒时间", 150, HorizontalAlignment.Left);
         }
 
+        /// <summary>
+        /// 设置ListVIew样式
+        /// </summary>
         void InitListViewStyle()
         {
             // 设置行高
@@ -73,6 +91,9 @@ namespace Microbit.Clock
             this.listView1.HideSelection = false;
         }
 
+        /// <summary>
+        /// 给ListView绑定数据
+        /// </summary>
         void BindData()
         {
             this.listView1.BeginUpdate();   //数据更新，UI暂时挂起，直到EndUpdate绘制控件，可以有效避免闪烁并大大提高加载速度
@@ -92,13 +113,28 @@ namespace Microbit.Clock
             this.listView1.EndUpdate();  //结束数据处理，UI界面一次性绘制。
         }
 
+        /// <summary>
+        /// 加载db
+        /// </summary>
+        /// <returns></returns>
         List<Events> LoadXml()
         {
             //创建Xml文件对象，加载xml文件
             string xmlFilePath = "db.xml";
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(xmlFilePath);
-
+            if (System.IO.File.Exists(xmlFilePath))//判断文件是否存在
+            {
+                //首先读取硬盘里的db.xml文件
+                xmlDoc.Load(xmlFilePath);
+            }
+            else
+            {
+                //如果不存在 则从嵌入资源内读取 db.xml 
+                Assembly asm = Assembly.GetExecutingAssembly();//读取嵌入式资源
+                Stream sm = asm.GetManifestResourceStream("Microbit.Clock.db.xml");
+                xmlDoc.Load(sm);
+            }
+            
             //获取根节点
             XmlElement nodeRoot = xmlDoc.DocumentElement;
 
@@ -120,12 +156,22 @@ namespace Microbit.Clock
             return EventList;
         }
 
+        /// <summary>
+        /// 新增
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnAddEvent_Click(object sender, EventArgs e)
         {
             EditForm.Event = new Clock.Events();
             EditForm.ShowAddForm(this);
         }
 
+        /// <summary>
+        /// 编辑
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnEditEvent_Click(object sender, EventArgs e)
         {
             if (listView1.SelectedItems.Count == 0) return;
@@ -136,6 +182,11 @@ namespace Microbit.Clock
             EditForm.ShowEditForm(this);
         }
 
+        /// <summary>
+        /// 删除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnDelEvent_Click(object sender, EventArgs e)
         {
             if (listView1.CheckedItems.Count == 0) return;
@@ -143,7 +194,18 @@ namespace Microbit.Clock
             //创建Xml文件对象，加载xml文件
             string xmlFilePath = "db.xml";
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(xmlFilePath);
+            if (System.IO.File.Exists(xmlFilePath))//判断文件是否存在
+            {
+                //首先读取硬盘里的db.xml文件
+                xmlDoc.Load(xmlFilePath);
+            }
+            else
+            {
+                //如果不存在 则从嵌入资源内读取 db.xml 
+                Assembly asm = Assembly.GetExecutingAssembly();//读取嵌入式资源
+                Stream sm = asm.GetManifestResourceStream("Microbit.Clock.db.xml");
+                xmlDoc.Load(sm);
+            }
 
             //获取根节点
             XmlElement nodeRoot = xmlDoc.DocumentElement;
@@ -158,6 +220,11 @@ namespace Microbit.Clock
             xmlDoc.Save(xmlFilePath);
         }
 
+        /// <summary>
+        /// 全选
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSelectAll_Click(object sender, EventArgs e)
         {
             isChecked = !isChecked;
@@ -167,11 +234,21 @@ namespace Microbit.Clock
             }
         }
 
+        /// <summary>
+        /// 列表项双击事件，弹出编辑窗口
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             btnEditEvent_Click(sender, e);
         }
 
+        /// <summary>
+        /// 定时器监听事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void timer1_Tick(object sender, EventArgs e)
         {
             string currTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -185,17 +262,32 @@ namespace Microbit.Clock
             }
         }
 
+        /// <summary>
+        /// 关闭窗口最小化
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             e.Cancel = true;
             this.Visible = false;
         }
 
+        /// <summary>
+        /// 状态栏图标菜单显示按钮单击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void showItem_Click(object sender, EventArgs e)
         {
-            this.Visible = true;
+            Display();
         }
 
+        /// <summary>
+        /// 状态栏菜单退出按钮单击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void closeItem_Click(object sender, EventArgs e)
         {
             timer1.Stop();
@@ -206,12 +298,57 @@ namespace Microbit.Clock
             Application.Exit();
         }
 
+        /// <summary>
+        /// 状态栏图标双击事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            this.Visible = !this.Visible;
+            Display();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                this.Visible = false;
+            }
+        }
+
+        /// <summary>
+        /// 显示主窗口
+        /// </summary>
+        private void Display()
+        {
+            //this.Visible = !this.Visible;
+            this.Visible = true;
+            this.TopMost = true;
+            this.WindowState = FormWindowState.Normal;
+            this.Activate();
+        }
+
+        /// <summary>
+        /// 创建快捷方式到启动目录
+        /// </summary>
+        public void CreateShortCut()
+        {
+            string StartupPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Startup);//得到启动文件夹路径
+            WshShell shell = new WshShell();
+            IWshShortcut shortcut = shell.CreateShortcut(StartupPath + "\\微比特电子闹钟.lnk") as IWshShortcut;
+            shortcut.TargetPath = System.Windows.Forms.Application.ExecutablePath;
+            shortcut.Arguments = "";// 参数
+            shortcut.Description = "微比特电子闹钟快捷方式";
+            shortcut.WorkingDirectory = System.IO.Directory.GetCurrentDirectory();//程序所在文件夹，在快捷方式图标点击右键可以看到此属性
+            shortcut.Hotkey = "CTRL+SHIFT+Z";//热键
+            shortcut.WindowStyle = 1;
+            shortcut.Save();
         }
     }
 
+    /// <summary>
+    /// 提醒事件实体类
+    /// </summary>
     public class Events
     {
         public int Index { get; set; }

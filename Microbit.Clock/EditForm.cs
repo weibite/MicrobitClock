@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -31,7 +33,19 @@ namespace Microbit.Clock
             //创建Xml文件对象，加载xml文件
             string xmlFilePath = "db.xml";
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(xmlFilePath);
+            if (System.IO.File.Exists(xmlFilePath))//判断文件是否存在
+            {
+                //首先读取硬盘里的db.xml文件
+                xmlDoc.Load(xmlFilePath);
+            }
+            else
+            {
+                //如果不存在 则从嵌入资源内读取 db.xml 
+                Assembly asm = Assembly.GetExecutingAssembly();//读取嵌入式资源
+                Stream sm = asm.GetManifestResourceStream("Microbit.Clock.db.xml");
+                
+                xmlDoc.Load(sm);
+            }
 
             //获取根节点
             XmlElement nodeRoot = xmlDoc.DocumentElement;

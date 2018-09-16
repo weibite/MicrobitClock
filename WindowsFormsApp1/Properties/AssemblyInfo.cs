@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("微比特电子闹钟")]
+[assembly: AssemblyTitle("WindowsFormsApp1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("微比特(Microbit)")]
-[assembly: AssemblyProduct("微比特电子闹钟--Microbit.Clock")]
-[assembly: AssemblyCopyright("Copyright © 陈亚（微比特科技）")]
+[assembly: AssemblyCompany("Microsoft")]
+[assembly: AssemblyProduct("WindowsFormsApp1")]
+[assembly: AssemblyCopyright("Copyright © Microsoft 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("f1443330-da72-452c-a8e7-1061a55e5f8b")]
+[assembly: Guid("8cb5f655-7e4c-4b1d-ae85-6e9fced6bf23")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
