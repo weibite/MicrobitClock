@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -19,6 +14,8 @@ namespace Microbit.Clock
         public EditForm()
         {
             InitializeComponent();
+            this.lblMusicPath.Text = string.Empty;
+            this.cboxCanPlay.Checked = true;
             Event = new Clock.Events();
         }
 
@@ -59,10 +56,13 @@ namespace Microbit.Clock
                 nodeEvent.SetAttribute("key", key);
                 XmlElement nodeTitle = xmlDoc.CreateElement("title");
                 XmlElement nodeEventTime = xmlDoc.CreateElement("eventTime");
+                XmlElement nodeMusic = xmlDoc.CreateElement("Music");
                 nodeTitle.InnerText = this.txtTitle.Text.Trim();
                 nodeEventTime.InnerText = this.dtpEventTime.Text;
+                nodeMusic.InnerText = this.lblMusicPath.Text;
                 nodeEvent.AppendChild(nodeTitle);
                 nodeEvent.AppendChild(nodeEventTime);
+                nodeEvent.AppendChild(nodeMusic);
                 nodeRoot.AppendChild(nodeEvent);
 
                 //插入到ListView中
@@ -71,13 +71,15 @@ namespace Microbit.Clock
                 lv.SubItems.Add((mainForm.listView1.Items.Count + 1).ToString());
                 lv.SubItems.Add(this.txtTitle.Text.Trim());
                 lv.SubItems.Add(this.dtpEventTime.Text);
+                lv.SubItems.Add(this.lblMusicPath.Text);
                 mainForm.listView1.Items.Add(lv);
 
                 mainForm.EventList.Add(new Events
                 {
                     Key = key,
                     Title = this.txtTitle.Text.Trim(),
-                    EventTime = this.dtpEventTime.Text
+                    EventTime = this.dtpEventTime.Text,
+                    Music = this.lblMusicPath.Text
                 });
             }
             else
@@ -88,16 +90,20 @@ namespace Microbit.Clock
                 nodeTitle.InnerText = this.txtTitle.Text.Trim();
                 XmlNode nodeEventTime = nodeEvent.SelectSingleNode("eventTime");
                 nodeEventTime.InnerText = this.dtpEventTime.Text;
+                XmlNode nodeMusic = nodeEvent.SelectSingleNode("Music");
+                nodeMusic.InnerText = this.lblMusicPath.Text;
 
                 //更新到ListView中
                 mainForm.listView1.Items[this.Event.Index].SubItems[3].Text = this.txtTitle.Text.Trim();
                 mainForm.listView1.Items[this.Event.Index].SubItems[4].Text = this.dtpEventTime.Text;
+                mainForm.listView1.Items[this.Event.Index].SubItems[5].Text = this.lblMusicPath.Text;
 
                 var evt = mainForm.EventList.FirstOrDefault(x => x.Key == this.Event.Key);
                 if(evt != null)
                 {
                     evt.Title = this.txtTitle.Text.Trim();
                     evt.EventTime = this.dtpEventTime.Text;
+                    evt.Music = this.lblMusicPath.Text;
                 }
             }
             xmlDoc.Save(xmlFilePath);
@@ -108,6 +114,8 @@ namespace Microbit.Clock
         {
             this.txtTitle.Text = string.Empty;
             this.dtpEventTime.ResetText();
+            this.openFileDialog1.Reset();
+            this.lblMusicPath.Text = string.Empty;
             this.ShowDialog(owner);
         }
 
@@ -121,6 +129,18 @@ namespace Microbit.Clock
         {
             this.txtTitle.Text = this.Event.Title;
             this.dtpEventTime.Text = this.Event.EventTime;
+            this.lblMusicPath.Text = this.Event.Music;
+        }
+
+        private void btnSelectMusic_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.InitialDirectory = "C:\\";//初始加载路径为C盘；
+            openFileDialog1.Filter = "音乐文件 (*.mp3)|*.mp3|All files (*.*)|*.*";//过滤你想设置的文本文件类型（mp3）
+            // openFileDialog1.Filter = "文本文件 (*.mp3)|*.mp3|All files (*.*)|*.*";（这是全部类型文件）
+            if (this.openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                lblMusicPath.Text = Path.GetFullPath(openFileDialog1.FileName);//显示文件的名字
+            }
         }
     }
 }

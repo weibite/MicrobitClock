@@ -35,6 +35,10 @@
             this.dtpEventTime = new System.Windows.Forms.DateTimePicker();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.btnSelectMusic = new System.Windows.Forms.Button();
+            this.lblMusicPath = new System.Windows.Forms.Label();
+            this.cboxCanPlay = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label1
@@ -73,7 +77,7 @@
             // 
             // btnClose
             // 
-            this.btnClose.Location = new System.Drawing.Point(237, 114);
+            this.btnClose.Location = new System.Drawing.Point(236, 179);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 32);
             this.btnClose.TabIndex = 4;
@@ -83,7 +87,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(112, 114);
+            this.btnSave.Location = new System.Drawing.Point(111, 179);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(75, 32);
             this.btnSave.TabIndex = 5;
@@ -91,11 +95,47 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // btnSelectMusic
+            // 
+            this.btnSelectMusic.Location = new System.Drawing.Point(31, 107);
+            this.btnSelectMusic.Name = "btnSelectMusic";
+            this.btnSelectMusic.Size = new System.Drawing.Size(65, 29);
+            this.btnSelectMusic.TabIndex = 7;
+            this.btnSelectMusic.Text = "设置音乐";
+            this.btnSelectMusic.UseVisualStyleBackColor = true;
+            this.btnSelectMusic.Click += new System.EventHandler(this.btnSelectMusic_Click);
+            // 
+            // lblMusicPath
+            // 
+            this.lblMusicPath.AutoSize = true;
+            this.lblMusicPath.Location = new System.Drawing.Point(29, 148);
+            this.lblMusicPath.Name = "lblMusicPath";
+            this.lblMusicPath.Size = new System.Drawing.Size(47, 12);
+            this.lblMusicPath.TabIndex = 8;
+            this.lblMusicPath.Text = " lable3";
+            // 
+            // cboxCanPlay
+            // 
+            this.cboxCanPlay.AutoSize = true;
+            this.cboxCanPlay.Location = new System.Drawing.Point(111, 114);
+            this.cboxCanPlay.Name = "cboxCanPlay";
+            this.cboxCanPlay.Size = new System.Drawing.Size(72, 16);
+            this.cboxCanPlay.TabIndex = 9;
+            this.cboxCanPlay.Text = "是否播放";
+            this.cboxCanPlay.UseVisualStyleBackColor = true;
+            // 
             // EditForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(372, 169);
+            this.ClientSize = new System.Drawing.Size(378, 229);
+            this.Controls.Add(this.cboxCanPlay);
+            this.Controls.Add(this.lblMusicPath);
+            this.Controls.Add(this.btnSelectMusic);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.dtpEventTime);
@@ -104,7 +144,7 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditForm";
-            this.Text = "EditForm";
+            this.Text = "设置闹钟";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -118,5 +158,9 @@
         private System.Windows.Forms.DateTimePicker dtpEventTime;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.Button btnSelectMusic;
+        private System.Windows.Forms.Label lblMusicPath;
+        private System.Windows.Forms.CheckBox cboxCanPlay;
     }
 }

@@ -1,14 +1,11 @@
 ﻿using IWshRuntimeLibrary;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -65,8 +62,9 @@ namespace Microbit.Clock
             this.listView1.Columns.Add("", 20, HorizontalAlignment.Left);
             this.listView1.Columns.Add("编号", 0, HorizontalAlignment.Left);
             this.listView1.Columns.Add("序号", 40, HorizontalAlignment.Left);
-            this.listView1.Columns.Add("标题", 450, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("标题", 250, HorizontalAlignment.Left);
             this.listView1.Columns.Add("提醒时间", 150, HorizontalAlignment.Left);
+            this.listView1.Columns.Add("播放音乐", 200, HorizontalAlignment.Left);
         }
 
         /// <summary>
@@ -107,6 +105,7 @@ namespace Microbit.Clock
                 lv.SubItems.Add((i + 1).ToString());
                 lv.SubItems.Add(EventList[i].Title);
                 lv.SubItems.Add(EventList[i].EventTime);
+                lv.SubItems.Add(EventList[i].Music);
                 this.listView1.Items.Add(lv);
             }
 
@@ -134,7 +133,7 @@ namespace Microbit.Clock
                 Stream sm = asm.GetManifestResourceStream("Microbit.Clock.db.xml");
                 xmlDoc.Load(sm);
             }
-            
+
             //获取根节点
             XmlElement nodeRoot = xmlDoc.DocumentElement;
 
@@ -145,11 +144,13 @@ namespace Microbit.Clock
                 string key = ((XmlElement)node).GetAttribute("key");
                 string title = node["title"].InnerText;
                 string eventTime = node["eventTime"].InnerText;
+                string music = node["Music"].InnerText;
                 EventList.Add(new Events
                 {
                     Key = key,
                     Title = title,
-                    EventTime = eventTime
+                    EventTime = eventTime,
+                    Music = music
                 });
             }
 
@@ -179,6 +180,7 @@ namespace Microbit.Clock
             EditForm.Event.Key = listView1.SelectedItems[0].SubItems[1].Text;
             EditForm.Event.Title = listView1.SelectedItems[0].SubItems[3].Text;
             EditForm.Event.EventTime = listView1.SelectedItems[0].SubItems[4].Text;
+            EditForm.Event.Music = listView1.SelectedItems[0].SubItems[5].Text;
             EditForm.ShowEditForm(this);
         }
 
@@ -257,7 +259,7 @@ namespace Microbit.Clock
                 var list = EventList.Where(x => x.EventTime + ":00" == currTime).ToList();
                 foreach (var item in list)
                 {
-                    new AlarmForm(item.Title).ShowDialog(this);
+                    new AlarmForm(item.Title, item.Music).ShowDialog(this);
                 }
             }
         }
@@ -334,8 +336,13 @@ namespace Microbit.Clock
         public void CreateShortCut()
         {
             string StartupPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Startup);//得到启动文件夹路径
+            string shortcutPath = StartupPath + "\\微比特电子闹钟.lnk";
+            if (System.IO.File.Exists(shortcutPath))
+            {
+                return;
+            }
             WshShell shell = new WshShell();
-            IWshShortcut shortcut = shell.CreateShortcut(StartupPath + "\\微比特电子闹钟.lnk") as IWshShortcut;
+            IWshShortcut shortcut = shell.CreateShortcut(shortcutPath) as IWshShortcut;
             shortcut.TargetPath = System.Windows.Forms.Application.ExecutablePath;
             shortcut.Arguments = "";// 参数
             shortcut.Description = "微比特电子闹钟快捷方式";
@@ -355,6 +362,7 @@ namespace Microbit.Clock
         public string Key { get; set; }
         public string Title { get; set; }
         public string EventTime { get; set; }
+        public string Music { get; set; }
 
         public Events()
         {
