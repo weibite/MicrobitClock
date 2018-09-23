@@ -218,6 +218,12 @@ namespace Microbit.Clock
                 nodeRoot.RemoveChild(node);
 
                 listView1.Items.Remove(lv);
+
+                var evt = EventList.FirstOrDefault(x => x.Key == key);
+                if(evt != null)
+                {
+                    EventList.Remove(evt);
+                }
             }
             xmlDoc.Save(xmlFilePath);
         }

@@ -144,7 +144,8 @@
             this.Controls.Add(this.label1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "EditForm";
-            this.Text = "设置闹钟";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "设置闹钟--微比特电子闹钟V1.0  (Author：陈亚)";
             this.ResumeLayout(false);
             this.PerformLayout();
 
