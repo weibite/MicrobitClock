@@ -262,6 +262,7 @@ namespace Microbit.Clock
             string currTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
             if (EventList.Any(x => x.EventTime + ":00" == currTime))
             {
+                this.TopMost = false;
                 var list = EventList.Where(x => x.EventTime + ":00" == currTime).ToList();
                 foreach (var item in list)
                 {
