@@ -132,7 +132,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(378, 229);
+            this.ClientSize = new System.Drawing.Size(405, 229);
             this.Controls.Add(this.cboxCanPlay);
             this.Controls.Add(this.lblMusicPath);
             this.Controls.Add(this.btnSelectMusic);
